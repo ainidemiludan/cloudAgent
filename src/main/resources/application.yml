@@ -19,6 +19,7 @@ spring:
         options:
           model: qwen-max
 
+
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
