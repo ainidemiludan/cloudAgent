@@ -1,6 +1,7 @@
 package com.company.cloudagent;
 
 import com.company.cloudagent.application.ChatOrchestrationService;
+import com.company.cloudagent.application.DashscopeGraphWorkflowService;
 import com.company.cloudagent.application.dto.ChatRequest;
 import com.company.cloudagent.application.dto.ChatResponse;
 import com.company.cloudagent.domain.DefaultSkillExecutor;
@@ -9,7 +10,6 @@ import com.company.cloudagent.infra.messaging.AgentEventPublisher;
 import com.company.cloudagent.infra.persistence.ConversationMapper;
 import com.company.cloudagent.infra.vector.VectorKnowledgeService;
 import org.junit.jupiter.api.Test;
-import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
@@ -22,13 +22,12 @@ class ChatOrchestrationServiceMockModeTest {
 
     @Test
     void shouldRunFullFlowWithMockDataAndSkipInfraIo() {
-        ChatClient chatClient = mock(ChatClient.class);
         VectorKnowledgeService vectorKnowledgeService = mock(VectorKnowledgeService.class);
         AgentEventPublisher agentEventPublisher = mock(AgentEventPublisher.class);
         ConversationMapper conversationMapper = mock(ConversationMapper.class);
 
         ChatOrchestrationService service = new ChatOrchestrationService(
-                chatClient,
+                mock(DashscopeGraphWorkflowService.class),
                 vectorKnowledgeService,
                 new DefaultSkillExecutor(),
                 new DefaultSkillMatcher(),
@@ -41,6 +40,6 @@ class ChatOrchestrationServiceMockModeTest {
 
         assertTrue(response.getAnswer().startsWith("[mock-answer]"));
         assertTrue(response.getRetrievedKnowledge().get(0).contains("[mock]"));
-        verifyNoInteractions(vectorKnowledgeService, agentEventPublisher, conversationMapper, chatClient);
+        verifyNoInteractions(vectorKnowledgeService, agentEventPublisher, conversationMapper);
     }
 }

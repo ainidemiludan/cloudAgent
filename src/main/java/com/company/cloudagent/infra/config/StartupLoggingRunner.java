@@ -27,10 +27,7 @@ public class StartupLoggingRunner implements ApplicationRunner {
     @Value("${spring.kafka.bootstrap-servers:}")
     private String kafkaServers;
 
-    @Value("${spring.ai.openai.base-url:}")
-    private String openaiBaseUrl;
-
-    @Value("${spring.ai.openai.chat.options.model:}")
+    @Value("${spring.ai.alibaba.dashscope.chat.options.model:}")
     private String model;
 
     @Value("${cloud-agent.mock.enabled:true}")
@@ -41,8 +38,8 @@ public class StartupLoggingRunner implements ApplicationRunner {
         log.info("CloudAgent started | appName={} | activeProfiles={}",
                 environment.getProperty("spring.application.name", "cloud-agent-platform"),
                 String.join(",", environment.getActiveProfiles()));
-        log.info("Infra endpoints | mysql={} | redis={}:{} | kafka={} | openaiBaseUrl={} | model={} | mockMode={}",
-                datasourceUrl, redisHost, redisPort, kafkaServers, openaiBaseUrl, model, mockEnabled);
+        log.info("Infra endpoints | mysql={} | redis={}:{} | kafka={} | dashscopeModel={} | mockMode={}",
+                datasourceUrl, redisHost, redisPort, kafkaServers, model, mockEnabled);
         log.debug("Startup args: {}", args.getOptionNames());
     }
 }

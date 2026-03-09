@@ -10,7 +10,6 @@ import com.company.cloudagent.infra.persistence.ConversationRecord;
 import com.company.cloudagent.infra.vector.VectorKnowledgeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChatOrchestrationService {
 
-    private final ChatClient chatClient;
+    private final DashscopeGraphWorkflowService dashscopeGraphWorkflowService;
     private final VectorKnowledgeService vectorKnowledgeService;
     private final SkillExecutor skillExecutor;
     private final SkillMatcher skillMatcher;
@@ -47,16 +46,9 @@ public class ChatOrchestrationService {
         List<String> executed = skillExecutor.execute(selectedSkills, request.getPrompt(), knowledge);
         log.debug("Skills executed: sessionId={} skills={}", request.getSessionId(), executed);
 
-        String finalPrompt = """
-                你是企业内部云端智能体，请基于以下上下文回复：
-                用户问题：%s
-                检索知识：%s
-                已执行技能：%s
-                """.formatted(request.getPrompt(), knowledge, executed);
-
         String answer = mockEnabled
                 ? "[mock-answer] 已完成需求解析：" + request.getPrompt() + "；系统自动选择技能=" + executed
-                : chatClient.prompt(finalPrompt).call().content();
+                : dashscopeGraphWorkflowService.generateAnswer(request.getPrompt(), knowledge, executed);
 
         if (mockEnabled) {
             log.info("Mock mode enabled, skip MySQL/Kafka IO for sessionId={}", request.getSessionId());
