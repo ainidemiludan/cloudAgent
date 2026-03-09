@@ -32,42 +32,42 @@ public class ChatOrchestrationService {
     private boolean mockEnabled;
 
     public ChatResponse handle(ChatRequest request) {
-        log.debug("Start orchestration for sessionId={} promptLength={}", request.sessionId(), request.prompt().length());
+        log.debug("Start orchestration for sessionId={} promptLength={}", request.getSessionId(), request.getPrompt().length());
 
         List<String> knowledge = mockEnabled
                 ? List.of("[mock] 企业知识库已启用模拟数据，可先验证对话主链路")
-                : vectorKnowledgeService.retrieve(request.prompt());
-        log.debug("Knowledge retrieved: sessionId={} size={} mockEnabled={}", request.sessionId(), knowledge.size(), mockEnabled);
+                : vectorKnowledgeService.retrieve(request.getPrompt());
+        log.debug("Knowledge retrieved: sessionId={} size={} mockEnabled={}", request.getSessionId(), knowledge.size(), mockEnabled);
 
-        List<String> selectedSkills = request.skillNames() == null || request.skillNames().isEmpty()
-                ? skillMatcher.match(request.prompt(), knowledge)
-                : request.skillNames();
-        log.debug("Skills selected: sessionId={} skills={}", request.sessionId(), selectedSkills);
+        List<String> selectedSkills = request.getSkillNames() == null || request.getSkillNames().isEmpty()
+                ? skillMatcher.match(request.getPrompt(), knowledge)
+                : request.getSkillNames();
+        log.debug("Skills selected: sessionId={} skills={}", request.getSessionId(), selectedSkills);
 
-        List<String> executed = skillExecutor.execute(selectedSkills, request.prompt(), knowledge);
-        log.debug("Skills executed: sessionId={} skills={}", request.sessionId(), executed);
+        List<String> executed = skillExecutor.execute(selectedSkills, request.getPrompt(), knowledge);
+        log.debug("Skills executed: sessionId={} skills={}", request.getSessionId(), executed);
 
         String finalPrompt = """
                 你是企业内部云端智能体，请基于以下上下文回复：
                 用户问题：%s
                 检索知识：%s
                 已执行技能：%s
-                """.formatted(request.prompt(), knowledge, executed);
+                """.formatted(request.getPrompt(), knowledge, executed);
 
         String answer = mockEnabled
-                ? "[mock-answer] 已完成需求解析：" + request.prompt() + "；系统自动选择技能=" + executed
+                ? "[mock-answer] 已完成需求解析：" + request.getPrompt() + "；系统自动选择技能=" + executed
                 : chatClient.prompt(finalPrompt).call().content();
 
         if (mockEnabled) {
-            log.info("Mock mode enabled, skip MySQL/Kafka IO for sessionId={}", request.sessionId());
+            log.info("Mock mode enabled, skip MySQL/Kafka IO for sessionId={}", request.getSessionId());
         } else {
-            conversationMapper.insert(ConversationRecord.of(request.sessionId(), request.userId(), request.prompt(), answer));
-            agentEventPublisher.publishCompleted(request.sessionId(), request.userId(), request.prompt(), answer);
+            conversationMapper.insert(ConversationRecord.of(request.getSessionId(), request.getUserId(), request.getPrompt(), answer));
+            agentEventPublisher.publishCompleted(request.getSessionId(), request.getUserId(), request.getPrompt(), answer);
         }
 
         log.info("Chat completed: sessionId={}, userId={}, answerLength={}",
-                request.sessionId(), request.userId(), answer == null ? 0 : answer.length());
+                request.getSessionId(), request.getUserId(), answer == null ? 0 : answer.length());
 
-        return new ChatResponse(request.sessionId(), answer, executed, knowledge);
+        return new ChatResponse(request.getSessionId(), answer, executed, knowledge);
     }
 }

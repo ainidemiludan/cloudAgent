@@ -39,8 +39,8 @@ class ChatOrchestrationServiceMockModeTest {
 
         ChatResponse response = service.handle(new ChatRequest("u-001", "s-001", "请总结本周任务", null));
 
-        assertTrue(response.answer().startsWith("[mock-answer]"));
-        assertTrue(response.retrievedKnowledge().get(0).contains("[mock]"));
+        assertTrue(response.getAnswer().startsWith("[mock-answer]"));
+        assertTrue(response.getRetrievedKnowledge().get(0).contains("[mock]"));
         verifyNoInteractions(vectorKnowledgeService, agentEventPublisher, conversationMapper, chatClient);
     }
 }
