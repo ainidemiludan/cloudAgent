@@ -23,7 +23,7 @@ public class ChatController {
     @PostMapping
     public ChatResponse chat(@Valid @RequestBody ChatRequest request) {
         log.info("Incoming chat request: sessionId={}, userId={}, skills={}",
-                request.sessionId(), request.userId(), request.skillNames());
+                request.getSessionId(), request.getUserId(), request.getSkillNames());
         return chatOrchestrationService.handle(request);
     }
 }
