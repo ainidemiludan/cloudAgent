@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: cloud-agent-platform
+  datasource:
+    url: jdbc:mysql://localhost:3306/cloud_agent?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: cloud_agent
+    password: cloud_agent
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  kafka:
+    bootstrap-servers: localhost:9092
+
+  ai:
+    dashscope:
+      api-key: ${DASHSCOPE_API_KEY:replace-me}
+      chat:
+        options:
+          model: qwen-max
+
+server:
+  port: 8080
