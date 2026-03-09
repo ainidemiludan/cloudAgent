@@ -13,12 +13,12 @@ spring:
     bootstrap-servers: localhost:9092
 
   ai:
-    openai:
-      base-url: ${OPENAI_BASE_URL:http://localhost:8000}
-      api-key: ${OPENAI_API_KEY:local-dev-key}
-      chat:
-        options:
-          model: ${OPENAI_MODEL:qwen2.5-14b-instruct}
+    alibaba:
+      dashscope:
+        api-key: ${DASHSCOPE_API_KEY:mock-dashscope-key}
+        chat:
+          options:
+            model: ${DASHSCOPE_MODEL:qwen-plus}
 
 mybatis-plus:
   configuration:
@@ -35,3 +35,7 @@ logging:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
 server:
   port: 8080
+
+cloud-agent:
+  mock:
+    enabled: true
