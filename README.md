@@ -17,7 +17,7 @@
 
 - **语言/JDK**：Java 17
 - **AI 框架**：Spring AI Alibaba（通过 BOM 管理）
-- **关系数据库**：MySQL（会话记录、审计、配置）
+- **关系数据库**：MySQL（会话记录、审计、配置，使用 MyBatis-Plus）
 - **缓存**：Redis（上下文缓存、召回结果缓存）
 - **消息队列**：Kafka（异步事件、日志与指标上报）
 
@@ -34,7 +34,7 @@
   |- VectorKnowledgeService (RAG)
   |- SkillExecutor (技能编排)
   |- ChatClient (Spring AI Alibaba)
-  |- ConversationRepository (MySQL)
+  |- ConversationMapper (MyBatis-Plus/MySQL)
   |- AgentEventPublisher (Kafka)
 ```
 

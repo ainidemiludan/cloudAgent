@@ -4,8 +4,8 @@ import com.company.cloudagent.application.dto.ChatRequest;
 import com.company.cloudagent.application.dto.ChatResponse;
 import com.company.cloudagent.domain.SkillExecutor;
 import com.company.cloudagent.infra.messaging.AgentEventPublisher;
+import com.company.cloudagent.infra.persistence.ConversationMapper;
 import com.company.cloudagent.infra.persistence.ConversationRecord;
-import com.company.cloudagent.infra.persistence.ConversationRepository;
 import com.company.cloudagent.infra.vector.VectorKnowledgeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
@@ -21,7 +21,7 @@ public class ChatOrchestrationService {
     private final VectorKnowledgeService vectorKnowledgeService;
     private final SkillExecutor skillExecutor;
     private final AgentEventPublisher agentEventPublisher;
-    private final ConversationRepository conversationRepository;
+    private final ConversationMapper conversationMapper;
 
     public ChatResponse handle(ChatRequest request) {
         List<String> knowledge = vectorKnowledgeService.retrieve(request.prompt());
@@ -35,7 +35,7 @@ public class ChatOrchestrationService {
                 """.formatted(request.prompt(), knowledge, executed);
 
         String answer = chatClient.prompt(finalPrompt).call().content();
-        conversationRepository.save(ConversationRecord.of(request.sessionId(), request.userId(), request.prompt(), answer));
+        conversationMapper.insert(ConversationRecord.of(request.sessionId(), request.userId(), request.prompt(), answer));
         agentEventPublisher.publishCompleted(request.sessionId(), request.userId(), request.prompt(), answer);
 
         return new ChatResponse(request.sessionId(), answer, executed, knowledge);
