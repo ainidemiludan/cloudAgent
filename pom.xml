@@ -6,11 +6,12 @@
     <artifactId>cloud-agent-platform</artifactId>
     <version>0.1.0-SNAPSHOT</version>
     <name>cloud-agent-platform</name>
-    <description>Enterprise cloud agent framework with OpenAI-compatible local model access</description>
+    <description>Enterprise cloud agent framework with Spring AI Alibaba and OpenAI-compatible local model access</description>
 
     <properties>
         <java.version>17</java.version>
         <spring.boot.version>3.3.4</spring.boot.version>
+        <spring.ai.alibaba.version>1.0.0.2</spring.ai.alibaba.version>
         <spring.ai.version>1.0.0</spring.ai.version>
         <mybatis.plus.version>3.5.7</mybatis.plus.version>
         <maven.compiler.release>${java.version}</maven.compiler.release>
@@ -26,9 +27,9 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>org.springframework.ai</groupId>
-                <artifactId>spring-ai-bom</artifactId>
-                <version>${spring.ai.version}</version>
+                <groupId>com.alibaba.cloud.ai</groupId>
+                <artifactId>spring-ai-alibaba-bom</artifactId>
+                <version>${spring.ai.alibaba.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -60,6 +61,7 @@
         <dependency>
             <groupId>org.springframework.ai</groupId>
             <artifactId>spring-ai-starter-model-openai</artifactId>
+            <version>${spring.ai.version}</version>
         </dependency>
         <dependency>
             <groupId>com.mysql</groupId>

@@ -9,14 +9,15 @@
 - **可组合能力**：通过 Prompt + 向量检索 + Skills 编排满足复杂任务。
 - **工程化可运营**：支持审计、可观测、权限治理、异步事件流。
 
-本仓库给出一套基于 **Java 17+ / Spring Boot / Spring AI (OpenAI Compatible) / MySQL / Redis / Kafka** 的企业级落地骨架。
+本仓库给出一套基于 **Java 17+ / Spring Boot / Spring AI Alibaba / MySQL / Redis / Kafka** 的企业级落地骨架。
 
 ---
 
 ## 2. 技术栈（按要求）
 
 - **语言/JDK**：Java 17
-- **AI 框架**：Spring AI (OpenAI Compatible)（通过 BOM 管理）
+- **AI 框架**：Spring AI Alibaba（通过 BOM 管理）
+- **模型接入协议**：OpenAI Compatible（链接本地私有化模型服务）
 - **关系数据库**：MySQL（会话记录、审计、配置，使用 MyBatis-Plus）
 - **缓存**：Redis（上下文缓存、召回结果缓存）
 - **消息队列**：Kafka（异步事件、日志与指标上报）
@@ -33,7 +34,7 @@
   |- Prompt 组装
   |- VectorKnowledgeService (RAG)
   |- SkillExecutor (技能编排)
-  |- ChatClient (Spring AI (OpenAI Compatible))
+  |- ChatClient (Spring AI Alibaba)
   |- ConversationMapper (MyBatis-Plus/MySQL)
   |- AgentEventPublisher (Kafka)
 ```
@@ -42,7 +43,7 @@
 1. 用户在聊天页提交请求（用户ID、会话ID、Prompt、技能集合）。
 2. 编排层先进行向量检索（当前示例为 Redis 缓存占位，后续可切换 Milvus/PGVector）。
 3. 执行技能链（当前示例为占位执行器，后续可按企业技能注册中心扩展）。
-4. 由 Spring AI (OpenAI Compatible) 的 ChatClient 调用模型生成最终回答。
+4. 由 Spring AI Alibaba 的 ChatClient 通过 OpenAI Compatible 配置调用本地私有化模型生成最终回答。
 5. 对话落库 MySQL；事件发送 Kafka，供审计/分析/监控消费。
 
 ---
