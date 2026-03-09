@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: cloud-agent-platform
+  datasource:
+    url: jdbc:mysql://localhost:3306/cloud_agent?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: cloud_agent
+    password: cloud_agent
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  kafka:
+    bootstrap-servers: localhost:9092
+
+  ai:
+    openai:
+      base-url: ${OPENAI_BASE_URL:http://localhost:8000}
+      api-key: ${OPENAI_API_KEY:local-dev-key}
+      chat:
+        options:
+          model: ${OPENAI_MODEL:qwen2.5-14b-instruct}
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    root: INFO
+    com.company.cloudagent: DEBUG
+    org.springframework.web: INFO
+    org.springframework.ai: INFO
+    com.baomidou.mybatisplus: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+server:
+  port: 8080
