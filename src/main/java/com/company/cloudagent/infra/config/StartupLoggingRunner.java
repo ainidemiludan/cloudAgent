@@ -33,13 +33,16 @@ public class StartupLoggingRunner implements ApplicationRunner {
     @Value("${spring.ai.openai.chat.options.model:}")
     private String model;
 
+    @Value("${cloud-agent.mock.enabled:true}")
+    private boolean mockEnabled;
+
     @Override
     public void run(ApplicationArguments args) {
         log.info("CloudAgent started | appName={} | activeProfiles={}",
                 environment.getProperty("spring.application.name", "cloud-agent-platform"),
                 String.join(",", environment.getActiveProfiles()));
-        log.info("Infra endpoints | mysql={} | redis={}:{} | kafka={} | openaiBaseUrl={} | model={}",
-                datasourceUrl, redisHost, redisPort, kafkaServers, openaiBaseUrl, model);
+        log.info("Infra endpoints | mysql={} | redis={}:{} | kafka={} | openaiBaseUrl={} | model={} | mockMode={}",
+                datasourceUrl, redisHost, redisPort, kafkaServers, openaiBaseUrl, model, mockEnabled);
         log.debug("Startup args: {}", args.getOptionNames());
     }
 }

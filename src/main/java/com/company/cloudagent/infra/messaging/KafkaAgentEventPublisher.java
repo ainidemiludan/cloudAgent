@@ -5,6 +5,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -17,13 +18,12 @@ public class KafkaAgentEventPublisher implements AgentEventPublisher {
 
     @Override
     public void publishCompleted(String sessionId, String userId, String prompt, String answer) {
-        Map<String, Object> event = Map.of(
-                "sessionId", sessionId,
-                "userId", userId,
-                "prompt", prompt,
-                "answer", answer,
-                "timestamp", Instant.now().toString()
-        );
+        Map<String, Object> event = new HashMap<>();
+        event.put("sessionId", sessionId);
+        event.put("userId", userId);
+        event.put("prompt", prompt);
+        event.put("answer", answer);
+        event.put("timestamp", Instant.now().toString());
         kafkaTemplate.send(TOPIC, sessionId, event);
     }
 }
