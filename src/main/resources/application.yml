@@ -13,12 +13,12 @@ spring:
     bootstrap-servers: localhost:9092
 
   ai:
-    dashscope:
-      api-key: ${DASHSCOPE_API_KEY:replace-me}
+    openai:
+      base-url: ${OPENAI_BASE_URL:http://localhost:8000}
+      api-key: ${OPENAI_API_KEY:local-dev-key}
       chat:
         options:
-          model: qwen-max
-
+          model: ${OPENAI_MODEL:qwen2.5-14b-instruct}
 
 mybatis-plus:
   configuration:
