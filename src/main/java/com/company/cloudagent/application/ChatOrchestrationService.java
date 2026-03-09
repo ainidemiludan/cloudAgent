@@ -44,7 +44,6 @@ public class ChatOrchestrationService {
         String answer = chatClient.prompt(finalPrompt).call().content();
         conversationMapper.insert(ConversationRecord.of(request.sessionId(), request.userId(), request.prompt(), answer));
         agentEventPublisher.publishCompleted(request.sessionId(), request.userId(), request.prompt(), answer);
-
         log.info("Chat completed: sessionId={}, userId={}, answerLength={}",
                 request.sessionId(), request.userId(), answer == null ? 0 : answer.length());
 
